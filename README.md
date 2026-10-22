@@ -14,7 +14,7 @@ Todo List là ứng dụng React đơn giản cho phép thêm, hiển thị và 
 
 ```jsx
 const [tasks, setTasks] = useState(() => {
-  const savedTasks = localStorage.getItem('tasks');
+  const savedTasks = localStorage.getItem("tasks");
   return savedTasks ? JSON.parse(savedTasks) : [];
 });
 ```
@@ -35,9 +35,7 @@ Khi xóa task:
 
 ```jsx
 const deleteTask = (id) => {
-  setTasks((prevTasks) =>
-    prevTasks.filter((task) => task.id !== id)
-  );
+  setTasks((prevTasks) => prevTasks.filter((task) => task.id !== id));
 };
 ```
 
@@ -46,7 +44,7 @@ const deleteTask = (id) => {
 **Quản lý nội dung ô nhập:**
 
 ```jsx
-const [taskName, setTaskName] = useState('');
+const [taskName, setTaskName] = useState("");
 ```
 
 `taskName` lưu nội dung người dùng đang nhập. `onChange` gọi `setTaskName(e.target.value)` để cập nhật state, còn `value={taskName}` liên kết giá trị của input với state. Sau khi thêm task, `setTaskName('')` làm trống ô nhập.
@@ -59,7 +57,7 @@ const [taskName, setTaskName] = useState('');
 
 ```jsx
 useEffect(() => {
-  localStorage.setItem('tasks', JSON.stringify(tasks));
+  localStorage.setItem("tasks", JSON.stringify(tasks));
 }, [tasks]);
 ```
 
@@ -106,10 +104,8 @@ taskInputRef.current.focus();
 
 ## 3. Tóm tắt
 
-| Hook | Cách dùng trong ứng dụng |
-|---|---|
-| `useState` | Quản lý danh sách task và nội dung ô nhập; thêm task bằng toán tử spread và xóa task bằng `filter()`. |
-| `useEffect` | Lưu danh sách vào `localStorage` khi `tasks` thay đổi và focus input khi component được mount. |
-| `useRef` | Tham chiếu đến input để gọi `focus()` mà không cần lưu phần tử DOM trong state. |
-
-**Phân biệt nhanh:** `useState` dành cho dữ liệu ảnh hưởng đến giao diện; `useEffect` xử lý tác vụ phụ; `useRef` giữ tham chiếu hoặc giá trị không cần kích hoạt render khi thay đổi.
+| Hook        | Cách dùng trong ứng dụng                                                                              |
+| ----------- | ----------------------------------------------------------------------------------------------------- |
+| `useState`  | Quản lý danh sách task và nội dung ô nhập; thêm task bằng toán tử spread và xóa task bằng `filter()`. |
+| `useEffect` | Lưu danh sách vào `localStorage` khi `tasks` thay đổi và focus input khi component được mount.        |
+| `useRef`    | Tham chiếu đến input để gọi `focus()` mà không cần lưu phần tử DOM trong state.                       |
