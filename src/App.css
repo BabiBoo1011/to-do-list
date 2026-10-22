@@ -1,38 +1,73 @@
-.App {
+
+.app {
+  max-width: 500px;
+  margin: 50px auto;
+  padding: 24px;
+  font-family: Arial, sans-serif;
+}
+
+h1 {
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+form {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+form input {
+  flex: 1;
+  min-width: 0;
+  padding: 10px;
+  font-size: 16px;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+button {
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.task-list {
+  list-style: none;
+  padding: 0;
   display: flex;
   flex-direction: column;
+  gap: 10px;
+}
+
+.task-item {
+  display: flex;
   align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
 }
 
-.App-link {
-  color: #61dafb;
+.task-title {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.delete-button {
+  color: #d00;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+}
+
+.delete-button:hover {
+  background: #fee;
+}
+
+.empty-message {
+  margin-top: 24px;
+  padding: 16px;
+  text-align: center;
+  color: #666;
+  border: 1px solid #ccc;
+  border-radius: 8px;
 }
