@@ -21,11 +21,32 @@ form input {
   min-width: 0;
   padding: 10px;
   font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+form input:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
 }
 
 button {
   padding: 8px 12px;
   cursor: pointer;
+  border-radius: 6px;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+form button {
+  color: #fff;
+  background: #2563eb;
+  border: 1px solid #2563eb;
+}
+
+form button:hover {
+  background: #1d4ed8;
 }
 
 .task-list {
@@ -52,15 +73,69 @@ button {
   overflow-wrap: anywhere;
 }
 
-.delete-button {
+.task-title.completed {
+  text-decoration: line-through;
+  color: #888;
+}
+
+.task-item input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.task-item input[type="text"] {
+  flex: 1;
+  min-width: 0;
+  padding: 8px 10px;
+  font-size: 14px;
+  border: 1px solid #86efac;
+  border-radius: 6px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.task-item input[type="text"]:focus {
+  border-color: #16a34a;
+  box-shadow: 0 0 0 2px rgba(22, 163, 74, 0.15);
+}
+
+.task-item button {
+  padding: 8px 12px;
+  border: 1px solid #86efac;
+  border-radius: 6px;
+  color: #15803d;
+  background: #f0fdf4;
+}
+
+.task-item button:hover {
+  background: #dcfce7;
+}
+
+.task-item .cancel-button {
+  color: #555;
+  background: #f3f4f6;
+  border: 1px solid #d1d5db;
+}
+
+.task-item .cancel-button:hover {
+  background: #e5e7eb;
+}
+
+.task-item .delete-button {
   color: #d00;
   background: #fff;
   border: 1px solid #ddd;
-  border-radius: 6px;
 }
 
-.delete-button:hover {
+.task-item .delete-button:hover {
   background: #fee;
+}
+
+.task-item button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
 }
 
 .empty-message {

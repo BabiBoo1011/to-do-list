@@ -3,11 +3,19 @@ import { useState, useEffect, useRef } from 'react';
 import './App.css';
 
 function App() {
+  /*=======================================================
+  Hooks
+  =======================================================*/
+
   // Quản lý danh sách công việc
   const [tasks, setTasks] = useState(() => {
     const savedTasks = localStorage.getItem('tasks');
     return savedTasks ? JSON.parse(savedTasks) : [];
   });
+
+  //Quản lý chỉnh sửa task
+  const [editTaskId, setEditTaskId] = useState(null);
+  const [editTaskName, setEditTaskName] = useState('');
 
   // Quản lý nội dung ô nhập
   const [taskName, setTaskName] = useState('');
@@ -24,6 +32,10 @@ function App() {
   useEffect(() => {
     taskInputRef.current.focus();
   }, []);
+
+  /*=====================================================
+  Hàm chức năng
+  =======================================================*/
 
   // Thêm task mới
   const addTask = () => {
@@ -48,11 +60,49 @@ function App() {
     taskInputRef.current.focus();
   };
 
-  
+  //Xóa task cũ
   const deleteTask = (id) => {
     setTasks((prevTasks) =>
       prevTasks.filter((task) => task.id !== id)
     );
+  };
+
+  //Đánh dấu task hoàn thành
+  const toggleTask = (id) => {
+    setTasks((prevTasks) =>
+      prevTasks.map((task) =>
+        task.id === id
+          ? {...task, completed: !task.completed}
+          : task
+      ) 
+    );
+  };
+
+  //Bắt đầu chỉnh sửa task
+  const startEdit = (task) => {
+    setEditTaskId(task.id);
+    setEditTaskName(task.title);
+  };
+
+  const cancelEdit = () => {
+    setEditTaskId(null);
+    setEditTaskName('');
+  };
+
+  const saveTask = (id) => {
+    const trimmedName = editTaskName.trim();
+    
+    if (!trimmedName) return;
+
+    setTasks((prevTasks) =>
+      prevTasks.map((task) =>
+      task.id === id
+        ? { ...task, title: trimmedName }
+        : task
+      )
+    );
+
+    cancelEdit();
   };
 
 
@@ -84,17 +134,67 @@ function App() {
         <ul className="task-list">
           {tasks.map((task) => (
             <li className="task-item" key={task.id}>
-              <span className="task-title">{task.title}</span>
+              <input
+                type="checkbox"
+                checked={task.completed}
+                onChange={() => toggleTask(task.id)}
+                arial-label={`Mark ${task.title} as completed`}
+              />
 
-              <button
-                type="button"
-                className="delete-button"
-                onClick={() => deleteTask(task.id)}
-                aria-label={`Delete ${task.title}`}
-                title="Delete task"
-              >
-                Delete
-              </button>
+              {editTaskId === task.id ? (
+                <>
+                  <input
+                    type="text"
+                    value={editTaskName}
+                    onChange={(e) => setEditTaskName(e.target.value)}
+                    aria-label="Edit"
+                  />
+
+                  <button
+                    type="button"
+                    onClick={() => saveTask(task.id)}
+                  >
+                    Save
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={cancelEdit}
+                    className="cancel-button"
+                  >
+                    Cancel
+                  </button>
+                </>
+              ) : (
+                <>
+                  <span
+                    className={`task-title ${
+                      task.completed ? 'completed' : ''
+                    }`}
+                  >
+                    {task.title}
+                  </span>
+
+                  <button
+                    type="button"
+                    onClick={() => startEdit(task)}
+                    disabled={task.completed}
+                  >
+                    Edit
+                  </button>
+
+                  <button
+                    type="button"
+                    className="delete-button"
+                    onClick={() => deleteTask(task.id)}
+                    aria-label={`Delete ${task.title}`}
+                    title="Delete task"
+                  >
+                    Delete
+                  </button>
+                </>
+              )
+            }
             </li>
           ))}
         </ul>
