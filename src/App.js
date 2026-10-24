@@ -1,5 +1,5 @@
-
 import { useState, useEffect, useRef } from 'react';
+import useTaskStore from './taskStore';
 import './App.css';
 
 function App() {
@@ -8,10 +8,15 @@ function App() {
   =======================================================*/
 
   // Quản lý danh sách công việc
-  const [tasks, setTasks] = useState(() => {
-    const savedTasks = localStorage.getItem('tasks');
-    return savedTasks ? JSON.parse(savedTasks) : [];
-  });
+  const tasks = useTaskStore((state) => state.tasks);
+  const loading = useTaskStore((state) => state.loading);
+  const error = useTaskStore((state) => state.error);
+
+  const fetchTasks = useTaskStore((state) => state.fetchTasks);
+  const addTaskToStore = useTaskStore((state) => state.addTask);
+  const editTaskInStore = useTaskStore((state) => state.editTask);
+  const toggleTaskInStore = useTaskStore((state) => state.toggleTask);
+  const deleteTaskFromStore = useTaskStore((state) => state.deleteTask);
 
   //Quản lý chỉnh sửa task
   const [editTaskId, setEditTaskId] = useState(null);
@@ -25,8 +30,8 @@ function App() {
 
   // Lưu danh sách task vào localStorage khi tasks thay đổi
   useEffect(() => {
-    localStorage.setItem('tasks', JSON.stringify(tasks));
-  }, [tasks]);
+    fetchTasks()
+  }, [fetchTasks]);
 
   // Tự động focus ô input khi mở ứng dụng
   useEffect(() => {
@@ -38,48 +43,35 @@ function App() {
   =======================================================*/
 
   // Thêm task mới
-  const addTask = () => {
+  const addTask = async () => {
     const title = taskName.trim();
 
     // Không thêm nếu nội dung rỗng
     if (title === '') {
-      taskInputRef.current.focus();
+      taskInputRef.current?.focus();
       return;
     }
 
-    const newTask = {
-      id: Date.now(),
-      title: title,
-      completed: false
-    };
+    const task = await addTaskToStore(title);
 
-    setTasks((prevTasks) => [...prevTasks, newTask]);
-    setTaskName('');
-
-    // Focus lại ô nhập sau khi thêm task
-    taskInputRef.current.focus();
+    if (task) {
+      setTaskName('');
+      taskInputRef.current?.focus();
+    }
   };
 
   //Xóa task cũ
-  const deleteTask = (id) => {
-    setTasks((prevTasks) =>
-      prevTasks.filter((task) => task.id !== id)
-    );
+  const deleteTask = async (id) => {
+    await deleteTaskFromStore(id);
   };
 
   //Đánh dấu task hoàn thành
-  const toggleTask = (id) => {
-    setTasks((prevTasks) =>
-      prevTasks.map((task) =>
-        task.id === id
-          ? {...task, completed: !task.completed}
-          : task
-      ) 
-    );
+  const toggleTask = async (id) => {
+    await toggleTaskInStore(id);
   };
 
   //Bắt đầu chỉnh sửa task
-  const startEdit = (task) => {
+  const startEdit = async (task) => {
     setEditTaskId(task.id);
     setEditTaskName(task.title);
   };
@@ -89,26 +81,25 @@ function App() {
     setEditTaskName('');
   };
 
-  const saveTask = (id) => {
-    const trimmedName = editTaskName.trim();
+  const saveTask = async (id) => {
+    const checkedName = editTaskName.trim();
     
-    if (!trimmedName) return;
+    if (!checkedName) return;
 
-    setTasks((prevTasks) =>
-      prevTasks.map((task) =>
-      task.id === id
-        ? { ...task, title: trimmedName }
-        : task
-      )
-    );
+    const task = await editTaskInStore(id, checkedName);
 
-    cancelEdit();
+    if (task) {
+      cancelEdit();
+    }
   };
-
 
   return (
     <div className="app">
       <h1>TODO LIST</h1>
+
+      {loading && <p>Loading tasks...</p>}
+
+      {error && <p className="error-message">{error}</p>}
 
       <form
         onSubmit={(e) => {
@@ -138,7 +129,7 @@ function App() {
                 type="checkbox"
                 checked={task.completed}
                 onChange={() => toggleTask(task.id)}
-                arial-label={`Mark ${task.title} as completed`}
+                aria-label={`Mark ${task.title} as completed`}
               />
 
               {editTaskId === task.id ? (
