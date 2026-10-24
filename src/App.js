@@ -120,7 +120,7 @@ function App() {
 
 
       {tasks.length === 0 ? (
-        <p className="empty-message">There is no task</p>
+        <p className="empty-message">You don't have any tasks yet</p>
       ) : (
         <ul className="task-list">
           {tasks.map((task) => (
