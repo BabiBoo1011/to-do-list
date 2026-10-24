@@ -28,6 +28,11 @@ function App() {
   // Tham chiếu đến ô input
   const taskInputRef = useRef(null);
 
+  //Quản lý giao diện sáng - tối
+  const [darkMode, setDarkMode] = useState(() => {
+    return localStorage.getItem('darkMode') === 'true';
+  })
+
   // Lưu danh sách task vào localStorage khi tasks thay đổi
   useEffect(() => {
     fetchTasks()
@@ -37,6 +42,13 @@ function App() {
   useEffect(() => {
     taskInputRef.current.focus();
   }, []);
+
+  //Chuyển chế độ sáng tối
+  useEffect(() => {
+    localStorage.setItem('darkMode', darkMode);
+
+    document.body.classList.toggle('dark-mode', darkMode);
+  }, [darkMode]);
 
   /*=====================================================
   Hàm chức năng
@@ -95,7 +107,22 @@ function App() {
 
   return (
     <div className="app">
-      <h1>TODO LIST</h1>
+      <div className='app-header'>
+        <h1>TODO LIST</h1>
+
+        <button
+          type="button"
+          className={`theme-switch ${darkMode ? 'active' : ''}`}
+          onClick={() => setDarkMode((prev) => !prev)}
+          role="switch"
+          aria-checked={darkMode}
+          aria-label="Toggle dark mode"
+        >
+          <span className="switch-icon">
+            {darkMode ? '' : ''}
+          </span>
+        </button>
+      </div>
 
       {loading && <p>Loading tasks...</p>}
 
